@@ -17,10 +17,27 @@ feature_columns = {
 }
 dataset = (
     pd.read_csv(
-        "../winequality-red.csv",
+        "winequality-red.csv",
         delimiter=",",
     )
     .rename(columns=feature_columns)
     .drop("quality", axis=1)
     .to_dict(orient="records")
 )
+
+class WinePredictionUser(HttpUser):
+    @task(1)
+    def healthcheck(self):
+        self.client.get("/healthcheck")
+
+    @task(10)
+    def prediction(self):
+        record = random.choice(dataset).copy()
+        self.client.post("/predict", json=record)
+
+    @task(2)
+    def prediction_bad_value(self):
+        record = random.choice(dataset).copy()
+        corrupt_key = random.choice(list(record.keys()))
+        record[corrupt_key] = "bad data"
+        self.client.post("/predict", json=record)

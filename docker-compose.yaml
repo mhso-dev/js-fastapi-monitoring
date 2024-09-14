@@ -24,3 +24,17 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+
+  # master:
+  #   image: locustio/locust:2.29.1
+  #   ports:
+  #    - "8089:8089"
+  #   volumes:
+  #     - ./locust:/mnt/locust
+  #   command: -f /mnt/locust/locust.py --master -H http://master:8089
+  
+  # worker:
+  #   image: locustio/locust:2.29.1
+  #   volumes:
+  #     - ./locust:/mnt/locust
+  #   command: -f /mnt/locust/locust.py --worker --master-host master
